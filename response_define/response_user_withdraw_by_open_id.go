@@ -3,8 +3,8 @@ package response_define
 type ResponseUserWithdrawByOpenID struct {
 	Sign      string                           `json:"sign"`
 	Timestamp string                           `json:"timestamp"`
-	Code      int                              `json:"Code"`
-	Msg       string                           `json:"Msg"`
+	Code      int                              `json:"code"`
+	Msg       string                           `json:"msg"`
 	Data      ResponseUserWithdrawByOpenIDData `json:"data"`
 }
 

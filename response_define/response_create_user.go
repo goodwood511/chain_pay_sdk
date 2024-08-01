@@ -5,9 +5,9 @@ type ResponseCreateUserData struct {
 }
 
 type ResponseCreateUser struct {
-	Sign      string                 `json:"sign"`
+	Code      int                    `json:"code"`
 	Timestamp string                 `json:"timestamp"`
-	Code      int                    `json:"Code"`
-	Msg       string                 `json:"Msg"`
-	Data      ResponseCreateUserData `json:"Data"`
+	Msg       string                 `json:"msg"`
+	Data      ResponseCreateUserData `json:"data"`
+	Sign      string                 `json:"sign"`
 }

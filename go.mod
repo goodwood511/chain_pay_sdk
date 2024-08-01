@@ -1,6 +1,6 @@
 module github.com/goodwood511/chain_pay_sdk
 
-go 1.20.1
+go 1.18.1
 
 require (
 	github.com/gin-gonic/gin v1.10.0
