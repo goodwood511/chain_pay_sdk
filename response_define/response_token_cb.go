@@ -4,6 +4,7 @@ type RequestTokenCb struct {
 	Amount       string `json:"amount"`
 	Chainid      string `json:"chainid"`
 	Confirm      string `json:"confirm"`
+	Createdtime  string `json:"createdtime"`
 	From         string `json:"from"`
 	Hash         string `json:"hash"`
 	Safecode     string `json:"safecode"`

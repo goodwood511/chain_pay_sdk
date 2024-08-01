@@ -35,10 +35,11 @@ func TestRSAVerify(t *testing.T) {
 		panic(fmt.Sprintf("Failed to load config: %s", err))
 	}
 	apiObj := NewSDK(SDKConfig{
-		ApiKey:         viper.GetString("ApiKey"),
-		ApiSecret:      viper.GetString("ApiSecret"),
-		PlatformPubKey: viper.GetString("PlatformPubKey"),
-		RsaPrivateKey:  viper.GetString("RsaPrivateKey"),
+		ApiKey:             viper.GetString("ApiKey"),
+		ApiSecret:          viper.GetString("ApiSecret"),
+		PlatformPubKey:     viper.GetString("PlatformPubKey"),
+		PlatformRiskPubKey: viper.GetString("PlatformRiskPubKey"),
+		RsaPrivateKey:      viper.GetString("RsaPrivateKey"),
 	})
 
 	mapData := rsa_utils.ToStringMap([]byte(jStr))

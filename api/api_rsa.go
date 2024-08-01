@@ -32,3 +32,20 @@ func (s *Sdk) VerifyRSAsignature(mapData map[string]string, sign string) error {
 
 	return nil
 }
+
+func (s *Sdk) VerifyRiskRSAsignature(mapData map[string]string, sign string) error {
+
+	rawStr := rsa_utils.ComposeParams(mapData)
+
+	publicKey, err := rsa_utils.ParsePublicKey(s.config.PlatformRiskPubKey)
+	if err != nil {
+		return err
+	}
+
+	err = rsa_utils.VerifySignature(publicKey, rawStr, sign)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

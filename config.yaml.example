@@ -1,4 +1,5 @@
 ApiKey: "000000000000"
 ApiSecret: "000000000000"
 PlatformPubKey: "000000000000000"
+PlatformRiskPubKey: "000000000000000"
 RsaPrivateKey: "000000000000000"

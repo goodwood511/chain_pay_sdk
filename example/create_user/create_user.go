@@ -30,27 +30,14 @@ func main() {
 	})
 
 	openId := "HASH13900000010"
-	var tokenId int64 = 4
-	var amount float64 = 0.01
-	addressTo := "TQdL5yttJPTx7hJmBhGfo2LcE7AXLPtHSg"
-	callbackUrl := "http://pay.xxxxx.com"
-	safeCheckCode := "202408132056"
 
-	reqBody, timestamp, sign, clientSign, err := apiObj.UserWithdrawByOpenID(openId,
-		int64(tokenId),
-		amount,
-		addressTo,
-		callbackUrl,
-		safeCheckCode,
-	)
-
-	fmt.Println("reqBody: ", string(reqBody))
+	reqBody, timestamp, sign, clientSign, err := apiObj.CreateUser(openId)
 	if err != nil {
 		logrus.Warnln("Error: ", err)
 		return
 	}
 
-	finalURL, err := url.JoinPath(api.DevNetEndpoint, api.PathUserWithdrawByOpenID)
+	finalURL, err := url.JoinPath(api.DevNetEndpoint, api.PathCreateUser)
 	if err != nil {
 		logrus.Warnln("Error: ", err)
 		return
@@ -86,13 +73,13 @@ func main() {
 		return
 	}
 
-	rspCreateUser := response_define.ResponseUserWithdrawByOpenID{}
+	rspCreateUser := response_define.ResponseCreateUser{}
 	err = json.Unmarshal(body, &rspCreateUser)
 	if err != nil {
 		logrus.Warnln("Error: ", err)
 		return
 	}
-	logrus.Infoln("ResponseUserWithdrawByOpenID: ", rspCreateUser)
+	logrus.Infoln("ResponseCreateUser: ", rspCreateUser)
 
 	mapObj := rsa_utils.ToStringMap(body)
 	err = apiObj.VerifyRSAsignature(mapObj, rspCreateUser.Sign)

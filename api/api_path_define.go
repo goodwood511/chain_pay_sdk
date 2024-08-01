@@ -2,7 +2,7 @@ package api
 
 const (
 	MainNetEndpoint = "https://vapi.dogpay.ai/sdk/"
-	DevNetEndpoint  = "https://apipay-test.privatex.io/sdk/"
+	DevNetEndpoint  = "https://sandbox-api.privatex.io/sdk"
 
 	PathCreateUser           = "/user/create"
 	PathCreateWallet         = "/wallet/create"

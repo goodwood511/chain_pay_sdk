@@ -18,7 +18,7 @@ import (
 func ComposeParams(params map[string]string) string {
 	var keys []string
 	for key := range params {
-		if key != "sign" && params[key] != "" {
+		if key != "sign" {
 			keys = append(keys, key)
 		}
 	}
