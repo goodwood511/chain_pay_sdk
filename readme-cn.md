@@ -240,7 +240,7 @@ go get github.com/goodwood511/chain_play_sdk
 | Amount        | 是   | float  | 用户提现的货币数量，精确到 2 位小数                        |
 | AddressTo     | 是   | string | 提现目标钱包                                               |
 | CallBackUrl   | 否   | string | 回调通知用户提现的进度，可不设置，采用合作伙伴默认回调 url |
-| SafeCheckCode | 否   | string | 用户提现交易的安全验证码                                   |
+| SafeCheckCode | 否   | string | 用户提现交易的安全验证码,一般为业务平台的提现唯一订单号，订单号要求全局唯一，用户多次提现请求，要求不同的订单号参数；提现交易回调信息会将这个字段的信息通过字段‘safecode’回传，业务平台可以依据订单号唯一关联提现请求                                   |
 
 #### 返回参数说明
 
@@ -250,6 +250,23 @@ go get github.com/goodwood511/chain_play_sdk
 | msg    | string | 状态描述                                                                                                                                                                                                                                                                                                                    |
 | data   | string | 交易的hash                                                                                                                                                                                                                                                                                                                  |
 | sign   | string | 平台签名                                                                                                                                                                                                                                                                                                                    |
+
+实例：
+
+```bash
+curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenID' \
+--header 'key: vratson2i5hjxgkd' \
+--header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'Content-Type: application/json' \
+--header 'timestamp: 1725076567682' \
+--data '{
+  "OpenId":"Hash2024041401",
+  "AddressTo":"TPoNrj1a9LCPYHUN88LnGQxG11XoFUNcw3",
+  "SafeCheckCode":"Hash2024083001-SOLANAChain-20240083012",
+  "TokenId":"4",
+  "Amount":"0.0105"
+}'
+```
 
 ### 5.2. 查询用户充提记录
 

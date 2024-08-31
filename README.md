@@ -231,14 +231,14 @@ Note: You need to run Go 1.18+ to compile;
 
 #### Request Parameters
 
-| Paramter      | Required | Type   | Description                                                                                                |
-| :------------ | :------- | :----- | :--------------------------------------------------------------------------------------------------------- |
-| OpenId        | Y        | string | User's unique OpenId                                                                                       |
-| TokenId       | Y        | string | TokenId                                                                                                    |
-| Amount        | Y        | float  | The amount of currency the user withdraws, accurate to 2 decimal places                                    |
-| AddressTo     | Y        | string | Destination wallet for withdrawal                                                                          |
-| CallBackUrl   | N        | string | Callback to notify the user of the withdrawal progress, optional, using the partner's default callback url |
-| SafeCheckCode | N        | string | Security verification code for user withdrawal transactions                                                |
+| Paramter      | Required | Type   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| :------------ | :------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OpenId        | Y        | string | User's unique OpenId                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| TokenId       | Y        | string | TokenId                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Amount        | Y        | float  | The amount of currency the user withdraws, accurate to 2 decimal places                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| AddressTo     | Y        | string | Destination wallet for withdrawal                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| CallBackUrl   | N        | string | Callback to notify the user of the withdrawal progress, optional, using the partner's default callback url                                                                                                                                                                                                                                                                                                                                                                                                   |
+| SafeCheckCode | N        | string | The security verification code for user withdrawal transactions is generally the unique withdrawal order number of the business platform. The order number is required to be globally unique. Users request withdrawals multiple times and require different order number parameters. The withdrawal transaction callback information will return the information in this field through the field 'safecode'. The business platform can uniquely associate the withdrawal request based on the order number. |
 
 #### Return parameter description
 
@@ -248,6 +248,23 @@ Note: You need to run Go 1.18+ to compile;
 | msg      | string | Status description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | data     | string | Transaction hash                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | sign     | string | Platform signature                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+Example:
+
+```bash
+curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenID' \
+--header 'key: vratson2i5hjxgkd' \
+--header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'Content-Type: application/json' \
+--header 'timestamp: 1725076567682' \
+--data '{
+  "OpenId":"Hash2024041401",
+  "AddressTo":"TPoNrj1a9LCPYHUN88LnGQxG11XoFUNcw3",
+  "SafeCheckCode":"Hash2024083001-SOLANAChain-20240083012",
+  "TokenId":"4",
+  "Amount":"0.0105"
+}'
+```
 
 ### 5.2. Query user deposit and withdrawal records
 
