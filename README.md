@@ -266,6 +266,32 @@ curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenI
 }'
 ```
 
+### Token transfer callback notification
+
+> POST 
+
+* Function: Define the format of the callback message that the platform sends to the application for receiving Token transfer notifications, which is suitable for the application to handle event notification messages for Token transaction status (withdrawal or recharge). The application can design optional callback notification interface functions based on the application functions.
+
+#### Request Parameters
+
+| Paramter     | Required | Type   | Description                                                                                                                                                                                                                              |
+| :----------- | :------- | :----- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| status       | Y        | int    |Transaction status:</br>1 The transaction is completed and has been successfully submitted to the blockchain network. The transaction details on the chain can be queried through Hash;</br>-1 The transaction has been submitted to the blockchain network. The transaction on the chain failed. You can go to Merchant Management-->Transaction Management-->Re-examine [Submit Order Security Code]. The business platform does not need to process the status change and just wait for the channel to callback the new status notification;</br>-2 The withdrawal transaction application was rejected by the merchant backend and the withdrawal application has expired. It is recommended that the business platform return the user's withdrawal application after receiving the notification;</br>2 The withdrawal transaction has been submitted to the merchant management. Since the configured currency security risk control requirements have been triggered, the administrator needs to further log in to the merchant management-->Transaction Management-->Withdrawal Review to complete the withdrawal application processing;</br>3 The withdrawal transaction blockchain transaction is being processed. The business platform does not need to update the status change and just wait for the channel to callback the new status notification; |
+| type         | Y        | int    | 1 indicates a deposit transaction; 2 indicates a withdrawal transaction                                                                                                                                                                  |
+| hash         | Y        | string | Hash                                                                                                                                                                                                                                     |
+| confirm      | Y        | int    | The number of confirmations of the transaction completed on the chain                                                                                                                                                                    |
+| createdtime  | Y        | string | create time                                                                                                                                                                                                                              |
+| from         | Y        | string | Transaction from address                                                                                                                                                                                                                 |
+| to           | Y        | string | Transaction to address                                                                                                                                                                                                                   |
+| amount       | Y        | string | Number of transactions                                                                                                                                                                                                                   |
+| chainid      | Y        | string | chain Id id                                                                                                                                                                                                                              |
+| tokenid      | Y        | string | tokenid                                                                                                                                                                                                                                  |
+| tokenaddress | Y        | string | token contract address                                                                                                                                                                                                                   |
+| safecode     | Y        | string | Valid for withdrawal orders, usually the unique number of the withdrawal order orderid                                                                                                                                                   |
+| timestamp    | Y        | string | Transaction timestamp                                                                                                                                                                                                                    |
+| tag          | N        | string | optional just for XRP，EOS                                                                                                                                                                                                               |
+| sign         | Y        | string | Platform signature data **The recipient can use the platform public key to verify the reliability of the data returned by the platform. It is strongly recommended that the recipient verify the validity of the signature**             |
+
 ### 5.2. Query user deposit and withdrawal records
 
 * Function: Provide partners with a data interface to query user recharge/withdrawal records, supporting paging query data
@@ -349,32 +375,6 @@ Deposit/Withdrawal Transaction Callback Interface Description
 1. Deposit and withdrawal transactions will repeatedly notify callbacks, and the transaction information and status of the last callback notification will prevail;
    
 2. The business end is required to return valid callback information. The format refers to the return parameter description. The business end needs to return code=0 to indicate that the callback message has been processed and no further notification is required. Otherwise, the callback will continue to notify (initial 50 times every 2 seconds, and then every 10 minutes) until the message confirmation with code=0 is returned;
-
-### 6.1. Token transfer callback notification
-
-> POST 
-
-* Function: Define the format of the callback message that the platform sends to the application for receiving Token transfer notifications, which is suitable for the application to handle event notification messages for Token transaction status (withdrawal or recharge). The application can design optional callback notification interface functions based on the application functions.
-
-#### Request Parameters
-
-| Paramter     | Required | Type   | Description                                                                                                                                                                                                                              |
-| :----------- | :------- | :----- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| status       | Y        | int    | Transaction status: </br>1 Transaction (withdrawal or review) successful;</br> -1 Transaction failed on the chain</br> -2 Indicates withdrawal review rejected</br> 2 Waiting for review;</br> 3 Indicates being processed on the chain; |
-| type         | Y        | int    | 1 indicates a deposit transaction; 2 indicates a withdrawal transaction                                                                                                                                                                  |
-| hash         | Y        | string | Hash                                                                                                                                                                                                                                     |
-| confirm      | Y        | int    | The number of confirmations of the transaction completed on the chain                                                                                                                                                                    |
-| createdtime  | Y        | string | create time                                                                                                                                                                                                                              |
-| from         | Y        | string | Transaction from address                                                                                                                                                                                                                 |
-| to           | Y        | string | Transaction to address                                                                                                                                                                                                                   |
-| amount       | Y        | string | Number of transactions                                                                                                                                                                                                                   |
-| chainid      | Y        | string | chain Id id                                                                                                                                                                                                                              |
-| tokenid      | Y        | string | tokenid                                                                                                                                                                                                                                  |
-| tokenaddress | Y        | string | token contract address                                                                                                                                                                                                                   |
-| safecode     | Y        | string | Valid for withdrawal orders, usually the unique number of the withdrawal order orderid                                                                                                                                                   |
-| timestamp    | Y        | string | Transaction timestamp                                                                                                                                                                                                                    |
-| tag          | N        | string | optional just for XRP，EOS                                                                                                                                                                                                               |
-| sign         | Y        | string | Platform signature data **The recipient can use the platform public key to verify the reliability of the data returned by the platform. It is strongly recommended that the recipient verify the validity of the signature**             |
 
 ### 6.2. Second review of withdrawal order
 
