@@ -439,10 +439,6 @@ timestamp： 当前时间戳毫秒转换成字符串
 
 #### HTTP Request
 
-生产环境`API`地址：[https://vapi.dogpay.ai/sdk/](https://vapi.dogpay.ai/sdk/)
-
-沙盒环境`API`地址：[https://sandbox-api.privatex.io/sdk/](https://sandbox-api.privatex.io/sdk/)
-
 > POST ： `/withdrawal/order/check`
 
 #### 请求参数
@@ -675,7 +671,30 @@ RsaPrivateKey: ""
 | 1      | 成功                         |      |
 | 10701  | 创建用户失败：已经存在此用户 |      |
 
-## 10. 公链ID
+## 10. Token
+
+| TokenID | Value         | Description                         |
+| :------ | :------------ | :---------------------------------- |
+| 1       | ETH-ETH       | ETH Network ETH                     |
+| 2       | ETH-USDT      | ETH Network USDT                    |
+| 3       | TRON-TRX      | TRON Network TRX                    |
+| 4       | TRON-USDT     | TRON Network token：USDT            |
+| 5       | BNB-BNB       | BNB Smart Chain Network BNB         |
+| 6       | BNB-USDT      | BNB Smart Chain Network token：USDT |
+| 11      | Polygon-MATIC | Polygon Network Matic               |
+| 12      | Polygon-USDT  | Polygon Network token：USDT         |
+| 13      | Polygon-USDC  | Polygon Network token：USDC         |
+| 22      | BNB-USDC      | BNB Smart Chain Network token：USDC |
+| 23      | BNB-DAI       | BNB Smart Chain Network token：DAI  |
+| 24      | ETH-USDC      | ETH Network USDC                    |
+| 25      | ETH-DAI       | ETH Network DAI                     |
+| 130     | Optimism-ETH  | Optimism Network ETH                |
+| 131     | Optimism-WLD  | Optimism Network token：WLD         |
+| 132     | Optimism-USDT | Optimism Network token：USDT        |
+| 100     | BTC-BTC       | BTC Network BTC Main chain currency |
+| 200     | TON-TON       | TON Network TON Main chain currency |
+
+## 11. 公链ID
 
 Token 类型
 
