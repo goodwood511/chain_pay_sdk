@@ -1,10 +1,4 @@
 # Chain Pay SDK
-<style>
-p {
-  line-height: 1.8; 
-  margin-bottom: 20px; 
-}
-</style>
 
 ![dogpay](https://raw.githubusercontent.com/goodwood511/chain_pay_sdk/main/doc/images/dogpay.png)
 
