@@ -98,6 +98,7 @@ Example
 curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -105,13 +106,15 @@ curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
 }'
 ```
 
-请求头中的字段说明：
+Description of the fields in the request header:
 
-key： 合作伙伴的Key，请参考(图 1-1-1)
+key： For the partner's Key, please refer to (Figure 1-1-1)
 
 sign： The generation rules are`md5( Secret + "Send data key=value, use & to connect in the middle" + Convert the current timestamp milliseconds into a string )`
 
-例子： md5("mysecret"+"OpenId=PT00001"+"1725076567682")
+Example: md5("mysecret"+"OpenId=PT00001"+"1725076567682")
+
+clientSign: The generation rule is `rsaWithMd5("send data key=value, use & to connect in the middle")`
 
 timestamp： Convert the current timestamp milliseconds into a string
 
@@ -124,7 +127,7 @@ timestamp： Convert the current timestamp milliseconds into a string
 | data.OpenId | string | Returns the user's unique OpenId |
 | sign        | string | Platform signature               |
 
-返回数据实例：
+Return data instance:
 
 ```json
 {
@@ -185,6 +188,7 @@ Example
 curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -289,6 +293,7 @@ Example
 curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenID' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -316,6 +321,7 @@ Example:
 curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenID' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{

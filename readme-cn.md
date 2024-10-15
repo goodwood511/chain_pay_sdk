@@ -101,6 +101,7 @@ openssl rsa -in rsa_private_key.pem -out rsa_public_key.pem -pubout
 curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -115,6 +116,8 @@ key： 合作伙伴的Key，请参考(图 1-1-1)
 sign： 生成规则为`md5( 合作伙伴的Secret + "发送数据key=value，中间使用&连接" + 当前时间戳毫秒转换成字符串 )`
 
 例子： md5("mysecret"+"OpenId=PT00001"+"1725076567682")
+
+clientSign： 生成规则为 `rsaWithMd5( "发送数据key=value，中间使用&连接" )`
 
 timestamp： 当前时间戳毫秒转换成字符串
 
@@ -181,6 +184,7 @@ ChainID 清单
 curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -194,6 +198,8 @@ key： 合作伙伴的Key
 sign： 生成规则为`md5( 合作伙伴的Secret + "发送数据key=value，中间使用&连接" + 当前时间戳单位为毫秒转换成字符串 )`
 
 例子： md5("mysecret"+"ChainId=1&OpenId=PT00001"+"1725076567682")
+
+clientSign： 生成规则为 `rsaWithMd5( "发送数据key=value，中间使用&连接" )`
 
 timestamp： 当前时间戳单位为毫秒转换成字符串
 
@@ -290,6 +296,7 @@ Token 类型
 curl --location 'https://sandbox-api.privatex.io/sdk/partner/UserWithdrawByOpenID' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
+--header 'clientSign: xxxxxxxxxxxxxxxxx' \
 --header 'Content-Type: application/json' \
 --header 'timestamp: 1725076567682' \
 --data '{
@@ -307,6 +314,8 @@ key： 合作伙伴的Key
 sign： 生成规则为`md5( 合作伙伴的Secret + "发送数据key=value，中间使用&连接" + 当前时间戳毫秒转换成字符串 )`
 
 例子： md5("mysecret"+"AddressTo=TQdL5yttJPTx7hJmBhGfo2LcE7AXLPtHSg&Amount=0.02&CallBackUrl=..."+"1725076567682")
+
+clientSign： 生成规则为 `rsaWithMd5( "发送数据key=value，中间使用&连接" )`
 
 timestamp： 当前时间戳毫秒转换成字符串
 
