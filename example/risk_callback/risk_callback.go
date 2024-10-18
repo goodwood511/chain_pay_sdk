@@ -43,7 +43,7 @@ func main() {
 		}
 
 		fmt.Println("Raw JSON:", string(body))
-		err = json.Unmarshal(body,&req)
+		err = json.Unmarshal(body, &req)
 		if err != nil {
 			logrus.Warnln("Unmarshal fail")
 			return
@@ -61,7 +61,7 @@ func main() {
 
 		err = apiObj.VerifyRiskRSAsignature(mapData, req.Sign)
 		if err != nil {
-			logrus.Warnln("VerifyRiskRSAsignature fail, err", err.Error(),"end")
+			logrus.Warnln("VerifyRiskRSAsignature fail, err", err.Error(), "end")
 			response_define.FailWithMessage("verify RSA signature fail "+err.Error(), c)
 			return
 		}

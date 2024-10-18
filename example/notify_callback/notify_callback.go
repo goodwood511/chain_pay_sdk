@@ -32,7 +32,7 @@ func main() {
 	})
 
 	r.POST("/withdraw_callback", func(c *gin.Context) {
-		
+
 		req := response_define.RequestTokenCb{}
 
 		body, err := c.GetRawData()

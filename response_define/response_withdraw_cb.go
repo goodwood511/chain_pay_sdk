@@ -18,7 +18,7 @@ type ResponseWithdraw struct {
 }
 
 type ResponseWithdrawCb struct {
-	Status      string `json:"status"`
+	Status    string `json:"status"`
 	Timestamp string `json:"timestamp"`
 	Message   string `json:"message"`
 	Sign      string `json:"sign"`
