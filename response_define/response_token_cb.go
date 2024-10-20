@@ -6,7 +6,7 @@ type RequestTokenCb struct {
 	Confirm      string `json:"confirm"`
 	Createdtime  string `json:"createdtime"`
 	From         string `json:"from"`
-	Hash         string `json:"hash"`
+	Hash         string `json:"hash,omitempty"`
 	Safecode     string `json:"safecode"`
 	Sign         string `json:"sign"`
 	Status       string `json:"status"`

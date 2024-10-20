@@ -50,14 +50,15 @@ func main() {
 			return
 		}
 
-		mapData, err := rsa_utils.StructToMap(req)
+		mapObj := make(map[string]string)
+		err = json.Unmarshal(body, &mapObj)
 		if err != nil {
 			logrus.Warnln("StructToMap fail, err", err.Error())
 			response_define.FailWithMessage("StructToMap fail "+err.Error(), c)
 			return
 		}
 
-		err = apiObj.VerifyRSAsignature(mapData, req.Sign)
+		err = apiObj.VerifyRSAsignature(mapObj, req.Sign)
 		if err != nil {
 			logrus.Warnln("VerifyRSAsignature fail, err", err.Error())
 			response_define.FailWithMessage("verify RSA signature fail "+err.Error(), c)

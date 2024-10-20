@@ -8,7 +8,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/goodwood511/chain_pay_sdk/api"
 	"github.com/goodwood511/chain_pay_sdk/response_define"
-	"github.com/goodwood511/chain_pay_sdk/rsa_utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
@@ -33,8 +32,8 @@ func main() {
 	var tokenId int64 = 4
 	var amount float64 = 0.01
 	addressTo := "TQdL5yttJPTx7hJmBhGfo2LcE7AXLPtHSg"
-	callbackUrl := "http://pay.xxxxx.com"
-	safeCheckCode := "202408132056"
+	callbackUrl := " "
+	safeCheckCode := "202408132056333"
 
 	reqBody, timestamp, sign, clientSign, err := apiObj.UserWithdrawByOpenID(openId,
 		int64(tokenId),
@@ -94,7 +93,13 @@ func main() {
 	}
 	logrus.Infoln("ResponseUserWithdrawByOpenID: ", rspCreateUser)
 
-	mapObj := rsa_utils.ToStringMap(body)
+	mapObj := make(map[string]string)
+	err = json.Unmarshal(body, &mapObj)
+	if err != nil {
+		logrus.Warnln("StructToMap fail, err", err.Error())
+		return
+	}
+
 	err = apiObj.VerifyRSAsignature(mapObj, rspCreateUser.Sign)
 	if err != nil {
 		logrus.Warnln("Error: ", err)
