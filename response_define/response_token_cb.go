@@ -1,6 +1,8 @@
 package response_define
 
 type RequestTokenCb struct {
+	OpenId       string `json:"openid"`
+	TotalValue   string `json:"totalvalue"`
 	Amount       string `json:"amount"`
 	Chainid      string `json:"chainid"`
 	Confirm      string `json:"confirm"`
