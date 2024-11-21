@@ -455,20 +455,22 @@ Example
 
 ```json
 {
-    "amount": "0.010000",
+    "amount": "23.000000000000000000",
     "chainid": "2",
     "confirm": "1",
-    "createdtime": "1725439986000",
-    "from": "TEuTmxuzNKA5HNAuPTmNBvpJgmci4HUKi2",
-    "hash": "94f4c29eba73d53dcd3aa8b97a4032dcdf7ff172e7",
-    "safecode": "safecode00001",
-    "sign": "Cd29MM1IxnhHh/cNB5DACUCtm31+R5vMx51OpGvLXRmtqvEhdZ9/WHaXZCtHcD0+71eQRgAoXaUDNHyFefqHdmQTfM+VLeHHIgL6c/WiOeZNeANC+T32hpg8gph1DIfY9/hHAHXmB/85swaZTu4lnHptdVu7LWiEkGPPdBPkNn8xyW3DRlildWxGauOxp001f9nH64YhIuUXiA4Fv8a9okhSq9xmrFKQ5FMaobTAWJyE+6hEwG5Bwraapz5C2Bs32jNlC7ifwgC+NaFoPInZxt2tNfdY/OFJnoQk2+Jp1Q==",
+    "createdtime": "1732105978000",
+    "from": "TPQmWeYVUmW4ZP",
+    "hash": "b180f4184be91e12124b01089",
+    "openid": "xxxxxx",
+    "safecode": "",
+    "sign":"",
     "status": "1",
-    "timestamp": "1725439996013",
-    "to": "TQdL5yttJPTx7hJmBhGfo2LcE7AXLPtHSg",
-    "tokenaddress": "TR7NHqjeKQxGTCi8q8",
+    "timestamp": "1732105988040",
+    "to": "TWLd7av6Lumoz9XAUkS8mPG7R51UstVLux",
+    "tokenaddress": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
     "tokenid": "4",
-    "type": "2"
+    "totalvalue": "23.00000000",
+    "type": "1"
 }
 ```
 
