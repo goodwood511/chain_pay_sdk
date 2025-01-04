@@ -575,7 +575,7 @@ Use the private key to sign the data with `RSA-md5`.
 ## 6. Install
 
 ```bash
-go get github.com/goodwood511/chain_play_sdk
+go get github.com/goodwood511/chain_pay_sdk
 ```
 
 Note: You need to run Go 1.18+ to compile;

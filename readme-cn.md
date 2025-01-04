@@ -544,7 +544,7 @@ clientSign
 ## 6. 安装
 
 ```bash
-go get github.com/goodwood511/chain_play_sdk
+go get github.com/goodwood511/chain_pay_sdk
 ```
 
 注意: 需要运行在 Go 1.18+ 版本才能编译；
