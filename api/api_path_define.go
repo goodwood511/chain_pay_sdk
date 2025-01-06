@@ -7,4 +7,6 @@ const (
 	PathCreateUser           = "/user/create"
 	PathCreateWallet         = "/wallet/create"
 	PathUserWithdrawByOpenID = "/partner/UserWithdrawByOpenID"
+	PathGetBlockHeader       = "/hash/getBlockHeader"
+	PathGetTXDetail          = "/hash/getTxDetail'"
 )
