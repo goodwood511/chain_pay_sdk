@@ -9,4 +9,5 @@ const (
 	PathUserWithdrawByOpenID = "/partner/UserWithdrawByOpenID"
 	PathGetBlockHeader       = "/hash/getBlockHeader"
 	PathGetTXDetail          = "/hash/getTxDetail"
+	PathQueryTokenList       = "/partner/QueryTokenList"
 )
