@@ -10,4 +10,5 @@ const (
 	PathGetBlockHeader       = "/hash/getBlockHeader"
 	PathGetTXDetail          = "/hash/getTxDetail"
 	PathQueryTokenList       = "/partner/QueryTokenList"
+	PathGetWalletAddresses   = "/wallet/getWalletAddresses"
 )
