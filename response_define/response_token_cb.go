@@ -1,5 +1,10 @@
 package response_define
 
+const (
+	RequestTokenCb_Type_Deposit  = "1"
+	RequestTokenCb_Type_Withdraw = "2"
+)
+
 type RequestTokenCb struct {
 	OpenId       string `json:"openid"`
 	TotalValue   string `json:"totalvalue"`
