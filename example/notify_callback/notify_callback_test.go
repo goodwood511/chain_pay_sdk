@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-func TestCallbackVerify(t *testing.T ) {
-	
+func TestCallbackVerify(t *testing.T) {
+
 	viper.SetConfigFile("config.yaml")
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {

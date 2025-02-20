@@ -29,14 +29,14 @@ func main() {
 	})
 
 	openId := "HASH13900000010"
-	var tokenId int64 = 4
-	var amount float64 = 0.01
+	tokenId := "4"
+	amount := "0.01"
 	addressTo := "TQdL5yttJPTx7hJmBhGfo2LcE7AXLPtHSg"
 	callbackUrl := " "
 	safeCheckCode := "202408132056333"
 
 	reqBody, timestamp, sign, clientSign, err := apiObj.UserWithdrawByOpenID(openId,
-		int64(tokenId),
+		tokenId,
 		amount,
 		addressTo,
 		callbackUrl,

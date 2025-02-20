@@ -1,8 +1,6 @@
 package api
 
 import (
-	"strconv"
-
 	"github.com/goodwood511/chain_pay_sdk/request_define"
 )
 
@@ -14,8 +12,8 @@ import (
 // @param safeCheckCode safe check code
 // @return data, timestamp, sign, clientSign, error
 func (s *Sdk) UserWithdrawByOpenID(openId string,
-	tokenId int64,
-	amount float64,
+	tokenId,
+	amount,
 	addressTo,
 	callbackUrl,
 	safeCheckCode string,
@@ -24,8 +22,8 @@ func (s *Sdk) UserWithdrawByOpenID(openId string,
 	return s.signPack(
 		request_define.RequestWithdrawByOpenID{
 			OpenID:        openId,
-			TokenID:       strconv.FormatInt(tokenId, 10),
-			Amount:        strconv.FormatFloat(amount, 'f', 2, 64),
+			TokenID:       tokenId,
+			Amount:        amount,
 			AddressTo:     addressTo,
 			CallBackURL:   callbackUrl,
 			SafeCheckCode: safeCheckCode,
