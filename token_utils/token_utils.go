@@ -3,21 +3,22 @@ package token_utils
 import "fmt"
 
 type TokenInfo struct {
-	ChainID      int64
-	TokenID      int64
-	TokenAddress string
-	Symbol       string
-	Decimal      int16
+	Mainnet      string `json:"mainnet"`
+	ChainID      int64  `json:"chain_id"`
+	TokenID      int64  `json:"token_id"`
+	TokenAddress string `json:"token_address"`
+	Symbol       string `json:"symbol"`
+	Decimal      int16  `json:"decimals"`
 }
 
 var (
-	mapTokenInfo = make(map[string]*TokenInfo)
+	mapTokenInfo = make(map[string]TokenInfo)
 )
 
 func GetTokenInfo(chainID, tokenId int64) *TokenInfo {
 	key := GenerateKey(chainID, tokenId)
 	if value, ok := mapTokenInfo[key]; ok {
-		return value
+		return &value
 	}
 	return nil
 }
