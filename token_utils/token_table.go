@@ -6,7 +6,7 @@ const tokenJson = `[
     "chain_id": 1,
     "token_id": 2,
     "token_address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
-    "symbol": "USDT",
+    "symbol": "USDT-ERC20",
     "decimals": 6
   },
   {
@@ -110,7 +110,7 @@ const tokenJson = `[
     "chain_id": 2,
     "token_id": 4,
     "token_address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
-    "symbol": "USDT",
+    "symbol": "USDT-TRC20",
     "decimals": 6
   },
   {
@@ -294,7 +294,7 @@ const tokenJson = `[
     "chain_id": 56,
     "token_id": 6,
     "token_address": "0x55d398326f99059ff775485246999027b3197955",
-    "symbol": "USDT",
+    "symbol": "USDT-BEP20",
     "decimals": 18
   },
   {
@@ -366,7 +366,7 @@ const tokenJson = `[
     "chain_id": 2032,
     "token_id": 35,
     "token_address": "0x109B57A29eE6E9A93f33687F6CE553fB18D8EE78",
-    "symbol": "USDT",
+    "symbol": "USDT-CRC20",
     "decimals": 6
   },
   {
