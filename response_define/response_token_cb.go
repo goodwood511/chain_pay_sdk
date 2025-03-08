@@ -22,4 +22,5 @@ type RequestTokenCb struct {
 	Tokenaddress string `json:"tokenaddress"`
 	Tokenid      string `json:"tokenid"`
 	Type         string `json:"type"`
+	Fee          string `json:"fee"`
 }
