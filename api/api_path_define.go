@@ -11,4 +11,5 @@ const (
 	PathGetTXDetail          = "/hash/getTxDetail"
 	PathQueryTokenList       = "/partner/QueryTokenList"
 	PathGetWalletAddresses   = "/wallet/getWalletAddresses"
+	PathGetTokenPrice        = "/token/price"
 )

@@ -474,17 +474,17 @@ Example
 }
 ```
 
-### 4.1. Second review of withdrawal order
+## 4. Second review of withdrawal order
 
 * Function: Merchant withdrawal order risk control secondary review interface
 * ⚠️ Note: **The platform assigns a separate risk control RSA public key to the merchant (different from the recharge/withdrawal callback notification public key)**
 * Triggering time: After the administrator configures the risk control callback URL parameter on the merchant side (system settings), the channel will add an additional risk control callback secondary review to each withdrawal transaction interface request initiated. Only when the merchant-side risk control URL returns the correct verification pass code can the transaction be effectively submitted.
 
-#### HTTP Request
+### HTTP Request
 
 > POST ： `/withdrawal/order/check`
 
-#### Request Parameters
+### Request Parameters
 
 | Paramter  | Required | Type   | Description                                                                                                                                                  |
 | :-------- | :------- | :----- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -496,7 +496,7 @@ Example
 | timestamp | Y        | int    | Current timestamp                                                                                                                                            |
 | sign      | Y        | string | Signature, only the parameters in data are signed; the platform's risk control RSA public key is required to verify the correctness of the signature         |
 
-#### Return parameter description
+### Return parameter description
 
 | Paramter  | Type   | Description                                                                                    |
 | :-------- | :----- | :--------------------------------------------------------------------------------------------- |
@@ -506,19 +506,19 @@ Example
 | sign      | string | Signature - Sign the data field in the response parameter using the merchant's RSA private key |
 
 
-### 5.2. Public Information
+## 5. Public Information
 
 The following information is common to all interfaces and will not be repeated for each interface.
 
-#### 5.2.1. Production Environment 
+### 5.1. Production Environment 
 
 API address: [https://vapi.dogpay.ai/sdk/](https://vapi.dogpay.ai/sdk/)
 
-#### 5.2.2. Sandbox environment 
+### 5.2. Sandbox environment 
 
 API address: [https://sandbox-api.privatex.io/sdk/](https://sandbox-api.privatex.io/sdk/)
 
-#### 5.2.3. Request public parameters
+### 5.3. Request public parameters
 
 Request header definition
 
@@ -562,7 +562,7 @@ This string is the concatenated string.
 
 Use the private key to sign the data with `RSA-md5`.
 
-#### 1.3.4. Public Information Notice
+### 5.4. Public Information Notice
 
 | Name               | Type      | Example                            | Description                                                 |
 | :----------------- | :-------- | :--------------------------------- | :---------------------------------------------------------- |
@@ -571,8 +571,57 @@ Use the private key to sign the data with `RSA-md5`.
 | Data               | json      | {"OpenID":"HEX..."}                | Returns specific data content                               |
 | Time               | timeStamp | 1722587274000                      | UTC time is unified time without time zone, in milliseconds |
 | Signature          | sign      | 9e0ccfe3915e94bcc5bfbBsC5EUxV6 ... | The platform uses RSA to sign all data                      |
+## 6. Query exchange rate price interface
 
-## 6. Install
+* Function: Query exchange rate price interface
+
+#### HTTP Request
+
+Production environment `API` address: [https://vapi.dogpay.ai/sdk/](https://vapi.dogpay.ai/sdk/)
+
+Sandbox environment `API` address: [https://sandbox-api.privatex.io/sdk/](https://sandbox-api.privatex.io/sdk/)
+
+> POST: `/token/price`
+
+#### Request parameters
+
+| Parameter name | Required | Type | Description |
+| :----- | :--- | :----- | :---------------- |
+| Tokens | Yes | string | Query tokens For example: BTC, ETH, TRX |
+
+Request example:
+
+```bash
+curl --location 'https://sandbox-api.privatex.io/sdk/token/price' \
+--header 'key: xxxxx' \
+--header 'sign: xxxxx' \
+--header 'timestamp: xxxxx' \
+--header 'Content-Type: application/json' \
+--data '{ 
+"Tokens":"BTC,ETH,TRX"
+}'
+```
+
+#### Return parameter description
+
+```json
+[ 
+{ 
+"token": "BTCUSDT", 
+"price": "81869.8" 
+}, 
+{ 
+"token": "ETHUSDT", 
+"price": "1799.37" 
+}, 
+{ 
+"token": "TRXUSDT", 
+"price": "0.2337" 
+}
+]
+```
+
+## 7. Install
 
 ```bash
 go get github.com/goodwood511/chain_pay_sdk
@@ -580,25 +629,25 @@ go get github.com/goodwood511/chain_pay_sdk
 
 Note: You need to run Go 1.18+ to compile;
 
-## 7. Business flow
+## 8. Business flow
 
-### 7.1. Recharge flow
+### 8.1. Recharge flow
 
 ![pay-service-flow](https://raw.githubusercontent.com/goodwood511/chain_pay_sdk/main/doc/images/pay-service-flow.jpg)
 
-### 7.2. withdraw flow
+### 8.2. withdraw flow
 
 ![pay-service-withdraw-flow](https://raw.githubusercontent.com/goodwood511/chain_pay_sdk/main/doc/images/pay-service-withdraw-flow.jpg)
 
-## 8. SDK
+## 9. SDK
 
-### 8.1. Configuration required
+### 9.1. Configuration required
 
 1. Register a business name to obtain `ApiKey` and `ApiSecret`;
 2. Generate your own `RSA` password pair;
 3. Prepare the platform's `RSA` public key;
 
-### 8.2. Creating a Signature Object
+### 9.2. Creating a Signature Object
 
 1. Add a configuration file `config.yaml`.
 
@@ -628,7 +677,7 @@ RsaPrivateKey: ""
 
 ```
 
-### 8.3. Create request data and sign it
+### 9.3. Create request data and sign it
 
 Let's take creating a user as an example.
 
@@ -645,7 +694,7 @@ Let's take creating a user as an example.
 
 ```
 
-### 8.4. Fill Request Initiate Request
+### 9.4. Fill Request Initiate Request
 
 ```golang
   // ....
@@ -667,7 +716,7 @@ Let's take creating a user as an example.
 
 ```
 
-### 8.5. Verify parsing return data
+### 9.5. Verify parsing return data
 
 ```golang
 
@@ -701,7 +750,7 @@ Let's take creating a user as an example.
 
 ```
 
-## 9. Global status code
+## 10. Global status code
 
 > 🔔Interface return value status code meaning list
 
@@ -710,7 +759,7 @@ Let's take creating a user as an example.
 | 1           | success                                         |        |
 | 10701       | Failed to create user: This user already exists |        |
 
-## 10. Token
+## 11. Token
 
 | TokenID | Value         | Description                         |
 | :------ | :------------ | :---------------------------------- |
@@ -733,7 +782,7 @@ Let's take creating a user as an example.
 | 100     | BTC-BTC       | BTC Network BTC Main chain currency |
 | 200     | TON-TON       | TON Network TON Main chain currency |
 
-## 11. chain ID
+## 12. chain ID
 
 | Token         | Full name           | Blockchain browser address      | Chain ID unique identifier |
 | :------------ | :------------------ | :------------------------------ | :------------------------- |
@@ -747,7 +796,7 @@ Let's take creating a user as an example.
 | matic_polygon | MATIC polygon chain | https://polygonscan.com         | 137                        |
 | TON           | Toncoin             | https://tonscan.org/            | 15186                      |
 
-## 12. token list
+## 13. token list
 
 | main network    | chain_id | token_id | token_address                                                    | symbol | decimals |
 | --------------- | -------- | -------- | ---------------------------------------------------------------- | ------ | -------- |
