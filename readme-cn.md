@@ -181,7 +181,7 @@ ChainID 清单
 请求实例：
 
 ```bash
-curl --location 'https://sandbox-api.privatex.io/sdk/user/create' \
+curl --location 'https://sandbox-api.privatex.io/sdk/wallet/create' \
 --header 'key: vratson2i5hjxgkd' \
 --header 'sign: 0592dc64d480fb119d1e07ce06011db8' \
 --header 'clientSign: xxxxxxxxxxxxxxxxx' \
