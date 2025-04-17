@@ -61,12 +61,12 @@ func LoadPrivateKeyFromBase64(base64String string) (*rsa.PrivateKey, error) {
 
 	keyBytes, err := base64.StdEncoding.DecodeString(base64String)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("base64.StdEncoding.DecodeString err %v please check privateKey", err)
 	}
 
 	privateKey, err := x509.ParsePKCS8PrivateKey(keyBytes)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("x509.ParsePKCS8PrivateKey err %v please check privateKey", err)
 	}
 
 	rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
@@ -85,7 +85,7 @@ func SignData(privateKey *rsa.PrivateKey, data string) (string, error) {
 
 	signature, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.MD5, hashInBytes[:])
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("SignData rsa.SignPKCS1v15 err %v please check privateKey", err)
 	}
 
 	return base64.StdEncoding.EncodeToString(signature), nil
@@ -94,7 +94,7 @@ func SignData(privateKey *rsa.PrivateKey, data string) (string, error) {
 func VerifySignature(publicKey *rsa.PublicKey, data, signature string) error {
 	decodedSignature, err := base64.StdEncoding.DecodeString(signature)
 	if err != nil {
-		return fmt.Errorf("error decoding signature: %v", err)
+		return fmt.Errorf("VerifySignature base64.StdEncoding.DecodeString err %v please check signature %s", err, signature)
 	}
 	hash := md5.New()
 
@@ -112,17 +112,17 @@ func VerifySignature(publicKey *rsa.PublicKey, data, signature string) error {
 func ParsePublicKey(publicKeyPEM string) (*rsa.PublicKey, error) {
 	keyBytes, err := base64.StdEncoding.DecodeString(publicKeyPEM)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("base64.StdEncoding.DecodeString err " + err.Error() + " please check publicKeyPEM")
 	}
 
 	publicKey, err := x509.ParsePKIXPublicKey(keyBytes)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("x509.ParsePKIXPublicKey err " + err.Error() + " please check publicKeyPEM " + publicKeyPEM)
 	}
 
 	rsaPublicKey, ok := publicKey.(*rsa.PublicKey)
 	if !ok {
-		return nil, errors.New("parsed public key is not an RSA public key")
+		return nil, errors.New("parsed public key is not an RSA public key please check publicKeyPEM " + publicKeyPEM)
 	}
 
 	return rsaPublicKey, nil
