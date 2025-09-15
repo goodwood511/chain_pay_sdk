@@ -236,6 +236,14 @@ const tokenJson = `[
   {
     "mainnet": "Bnb Smart Chain",
     "chain_id": 56,
+    "token_id": 5619,
+    "token_address": "0x991cee7f782abaefc9e1aa93b70b4f6fc6c8326e",
+    "symbol": "AIFI",
+    "decimals": 18
+  },
+  {
+    "mainnet": "Bnb Smart Chain",
+    "chain_id": 56,
     "token_id": 68,
     "token_address": "0x6FDcdfef7c496407cCb0cEC90f9C5Aaa1Cc8D888",
     "symbol": "VET",
