@@ -7,17 +7,18 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"github.com/goodwood511/chain_pay_sdk/rsa_utils"
 	"io"
+
+	"github.com/goodwood511/chain_pay_sdk/rsa_utils"
+	"github.com/sirupsen/logrus"
 )
 
-func VerifySignature(publicKey *rsa.PublicKey, data, signature string) error {
+func verifySignature(publicKey *rsa.PublicKey, data, signature string) error {
 	decodedSignature, err := base64.URLEncoding.DecodeString(signature)
 	if err != nil {
 		return fmt.Errorf("error decoding signature: %v", err)
 	}
 	hash := sha256.New()
-
 	io.WriteString(hash, data)
 	hashInBytes := hash.Sum(nil)
 
@@ -29,9 +30,8 @@ func VerifySignature(publicKey *rsa.PublicKey, data, signature string) error {
 	return nil
 }
 
-func SignData(privateKey *rsa.PrivateKey, data string) (string, error) {
+func signData(privateKey *rsa.PrivateKey, data string) (string, error) {
 	hash := sha256.New()
-
 	io.WriteString(hash, data)
 	hashInBytes := hash.Sum(nil)
 
@@ -45,34 +45,28 @@ func SignData(privateKey *rsa.PrivateKey, data string) (string, error) {
 
 func main() {
 	rawStr := "aaaaa"
-	RsaPrivateKey := `xxxxxx`
+	rsaPrivateKeyB64 := "YOUR_PRIVATE_KEY_BASE64" // Replace with real key for testing
 
-	privateKey, err := rsa_utils.LoadPrivateKeyFromBase64(RsaPrivateKey)
+	privateKey, err := rsa_utils.LoadPrivateKeyFromBase64(rsaPrivateKeyB64)
 	if err != nil {
+		logrus.Errorf("Failed to load private key: %v", err)
 		return
 	}
 	publicKey := &privateKey.PublicKey
-	sign := "xxxxxx"
 
-	err = VerifySignature(publicKey, rawStr, sign)
+	// 1. Sign data
+	goSign, err := signData(privateKey, rawStr)
 	if err != nil {
-		fmt.Println("verify signature failed", err)
+		logrus.Errorf("Sign data failed: %v", err)
 	} else {
-		fmt.Println("verify signature success")
+		logrus.Infof("Sign data success: %s", goSign)
 	}
 
-	goSign, err := SignData(privateKey, rawStr)
+	// 2. Verify signature
+	err = verifySignature(publicKey, rawStr, goSign)
 	if err != nil {
-		fmt.Println("sign data failed", err)
+		logrus.Errorf("Verify signature failed: %v", err)
 	} else {
-		fmt.Println("sign data success", goSign)
+		logrus.Info("Verify signature success")
 	}
-
-	err = VerifySignature(publicKey, rawStr, goSign)
-	if err != nil {
-		fmt.Println("verify signature failed", err)
-	} else {
-		fmt.Println("verify signature success")
-	}
-
 }

@@ -10,19 +10,19 @@ import (
 func main() {
 	apiObj := utils.InitSDK()
 
-	block := "68123537"
-	chainID := "2"
+	openId := "dogpay_"
+	chainIDs := "56,2"
 
-	reqBody, timestamp, sign, clientSign, err := apiObj.GetBlockHeader(block, chainID)
+	reqBody, timestamp, sign, clientSign, err := apiObj.GetWalletAddresses(openId, chainIDs)
 	if err != nil {
 		logrus.Fatalf("Failed to prepare request: %v", err)
 	}
 
-	var resp response_define.ResponseGetBlockHeader
-	err = utils.CallAndVerify(apiObj, api.PathGetBlockHeader, reqBody, timestamp, sign, clientSign, &resp)
+	var resp response_define.ResponseGetWalletAddresses
+	err = utils.CallAndVerify(apiObj, api.PathGetWalletAddresses, reqBody, timestamp, sign, clientSign, &resp)
 	if err != nil {
 		logrus.Fatalf("API call failed: %v", err)
 	}
 
-	logrus.Infof("GetBlockHeader Success: %+v", resp)
+	logrus.Infof("GetWalletAddresses Success: %+v", resp)
 }

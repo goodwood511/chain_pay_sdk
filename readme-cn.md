@@ -617,112 +617,86 @@ go get github.com/goodwood511/chain_pay_sdk
 2. 生成自己`RSA`的密码对；
 3. 准备好平台的`RSA`的公钥；
 
-### 9.2. 创建签名对象
+### 9.2. 简化 SDK 初始化（最佳实践）
 
-1. 添加一个配置文件`config.yaml`。
+建议使用共享工具包来管理 SDK 实例和 HTTP 客户端。完整实现请参考 [example/utils](example/utils/utils.go)。
+
+1. 创建 `config.yaml`：
 
 ```yaml
-# 配置商号信息
-ApiKey: ""
-ApiSecret: ""
-# 平台的公钥
-PlatformPubKey: ""
-# 封控平台的公钥
-PlatformRiskPubKey: ""
-# 自己的私钥
-RsaPrivateKey: ""
+ApiKey: "your_api_key"
+ApiSecret: "your_api_secret"
+PlatformPubKey: "platform_public_key"
+PlatformRiskPubKey: "platform_risk_public_key"
+RsaPrivateKey: "your_rsa_private_key"
 ```
 
-2. 加载配置文件并且创建API object。
+2. 初始化 SDK 和共享客户端：
 
 ```golang
+import (
+    "github.com/goodwood511/chain_pay_sdk/api"
+    "github.com/goodwood511/chain_pay_sdk/example/utils"
+)
 
-	viper.SetConfigFile("config.yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Sprintf("Failed to load config: %s", err))
-	}
-	apiObj := api.NewSDK(api.SDKConfig{
-		ApiKey:             viper.GetString("ApiKey"),
-		ApiSecret:          viper.GetString("ApiSecret"),
-		PlatformPubKey:     viper.GetString("PlatformPubKey"),
-		PlatformRiskPubKey: viper.GetString("PlatformRiskPubKey"),
-		RsaPrivateKey:      viper.GetString("RsaPrivateKey"),
-	})
-
+func main() {
+    // 加载配置并初始化 SDK
+    apiObj := utils.InitSDK()
+    
+    // 共享客户端已预配置 15s 超时和 3 次重试
+    // utils.Client
+}
 ```
 
-### 9.3. 创建请求数据，并且签名
+### 9.3. 调用 API 并验证响应
 
-我们以创建用户作为例。
+使用 `CallAndVerify` 辅助函数可以显著减少模板代码。
 
 ```golang
+import (
+    "github.com/goodwood511/chain_pay_sdk/api"
+    "github.com/goodwood511/chain_pay_sdk/example/utils"
+    "github.com/goodwood511/chain_pay_sdk/response_define"
+    "github.com/sirupsen/logrus"
+)
 
-  // ....
-	openId := "PT00001"
+func main() {
+    apiObj := utils.InitSDK()
 
-	reqBody, timestamp, sign, clientSign, err := apiObj.CreateUser(openId)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
+    openId := "PT00001"
+    reqBody, timestamp, sign, clientSign, err := apiObj.CreateUser(openId)
+    if err != nil {
+        logrus.Fatalf("准备请求失败: %v", err)
+    }
 
+    var resp response_define.ResponseCreateUser
+    err = utils.CallAndVerify(apiObj, api.PathCreateUser, reqBody, timestamp, sign, clientSign, &resp)
+    if err != nil {
+        logrus.Fatalf("API 调用失败: %v", err)
+    }
+
+    logrus.Infof("成功: %+v", resp)
+}
 ```
 
-### 9.4. 填充请求发起请求
+### 9.4. 处理回调通知
+
+验证来自平台的通知请求的真实性：
 
 ```golang
-  // ....
-	
-	finalURL, err := url.JoinPath(api.DevNetEndpoint, api.PathCreateWallet)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
+func handleCallback(c *gin.Context) {
+    body, _ := c.GetRawData()
+    var req response_define.RequestTokenCb
+    json.Unmarshal(body, &req)
 
-	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(reqBody).
-		SetHeader("key", apiObj.GetApiKey()).
-		SetHeader("timestamp", timestamp).
-		SetHeader("sign", sign).
-		SetHeader("clientSign", clientSign).
-		Post(finalURL)
-
-```
-
-### 9.5. 验证解析返回数据
-
-```golang
-
-	rspCommon := response_define.ResponseCommon{}
-	err = json.Unmarshal(body, &rspCommon)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-	logrus.Infoln("Response: ", rspCommon)
-
-	if rspCommon.Code != response_define.SUCCESS {
-		logrus.Warnln("Response fail Code", rspCommon.Code, "Msg", rspCommon.Msg)
-		return
-	}
-
-	rspCreateUser := response_define.ResponseCreateUser{}
-	err = json.Unmarshal(body, &rspCreateUser)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-	logrus.Infoln("ResponseCreateUser: ", rspCreateUser)
-
-	mapObj := rsa_utils.ToStringMap(body)
-	err = apiObj.VerifyRSAsignature(mapObj, rspCreateUser.Sign)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-
+    // 使用平台公钥验证 RSA 签名
+    if err := utils.VerifyCallback(apiObj, body, req.Sign); err != nil {
+        c.JSON(403, gin.H{"message": "签名无效"})
+        return
+    }
+    
+    // 处理业务逻辑...
+}
 ```
 
 ## 11. 全局状态码

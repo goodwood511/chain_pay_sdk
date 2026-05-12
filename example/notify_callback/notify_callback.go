@@ -2,95 +2,69 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/goodwood511/chain_pay_sdk/api"
+	"github.com/goodwood511/chain_pay_sdk/example/utils"
 	"github.com/goodwood511/chain_pay_sdk/response_define"
 	"github.com/goodwood511/chain_pay_sdk/rsa_utils"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 func main() {
+	apiObj := utils.InitSDK()
+
 	r := gin.Default()
 
-	viper.SetConfigFile("config.yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Sprintf("Failed to load config: %s", err))
-	}
-	apiObj := api.NewSDK(api.SDKConfig{
-		ApiKey:             viper.GetString("ApiKey"),
-		ApiSecret:          viper.GetString("ApiSecret"),
-		PlatformPubKey:     viper.GetString("PlatformPubKey"),
-		PlatformRiskPubKey: viper.GetString("PlatformRiskPubKey"),
-		RsaPrivateKey:      viper.GetString("RsaPrivateKey"),
-	})
-
 	r.POST("/withdraw_callback", func(c *gin.Context) {
-
-		req := response_define.RequestTokenCb{}
-
 		body, err := c.GetRawData()
 		if err != nil {
-			c.JSON(400, gin.H{
-				"message": "Failed to read request body",
-			})
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Failed to read request body"})
 			return
 		}
 
-		fmt.Println("Raw JSON:", string(body))
-		err = json.Unmarshal(body, &req)
-		if err != nil {
-			logrus.Warnln("Unmarshal fail")
+		var req response_define.RequestTokenCb
+		if err := json.Unmarshal(body, &req); err != nil {
+			logrus.Warnf("Unmarshal failed: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON"})
 			return
 		}
 
-		mapObj := make(map[string]string)
-		err = json.Unmarshal(body, &mapObj)
-		if err != nil {
-			logrus.Warnln("StructToMap fail, err", err.Error())
-			response_define.FailWithMessage("StructToMap fail "+err.Error(), c)
+		if err := utils.VerifyCallback(apiObj, body, req.Sign); err != nil {
+			logrus.Warnf("VerifyRSAsignature failed: %v", err)
+			c.JSON(http.StatusForbidden, gin.H{"message": "Invalid signature"})
 			return
 		}
 
-		err = apiObj.VerifyRSAsignature(mapObj, req.Sign)
-		if err != nil {
-			logrus.Warnln("VerifyRSAsignature fail, err", err.Error())
-			response_define.FailWithMessage("verify RSA signature fail "+err.Error(), c)
-			return
-		}
-		logrus.Infoln(req)
+		logrus.Infof("Callback received: %+v", req)
 
+		// Generate response signature
 		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-
 		rsp := response_define.ResponseWithdraw{
 			Code:      "0",
 			Timestamp: timestamp,
-			Message:   "",
-			Sign:      "",
+			Message:   "success",
 		}
 
-		jStr, err := json.Marshal(&req)
+		// Re-marshal to get map for signing (as per original logic)
+		jStr, _ := json.Marshal(&req)
+		reqMap := rsa_utils.ToStringMap(jStr)
+		// Original used rsa_utils.ToStringMap(jStr)
+		// Let's stick to what was there but clean
+		
+		clientSign, err := apiObj.GenerateRSASignature(reqMap)
 		if err != nil {
-			logrus.Warnln("json.Marshal fail, err", err.Error())
-			return
-		}
-
-		reqMapObj := rsa_utils.ToStringMap(jStr)
-		clientSign, err := apiObj.GenerateRSASignature(reqMapObj)
-		if err != nil {
-			logrus.Warnln("apiObj.GenerateRSASignature fail, err", err.Error())
+			logrus.Errorf("GenerateRSASignature failed: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal error"})
 			return
 		}
 		rsp.Sign = clientSign
 
-		logrus.Infoln("VerifyRSAsignature success.")
 		c.JSON(http.StatusOK, rsp)
 	})
+
+	logrus.Info("Starting notify_callback server on :9003")
 	r.Run(":9003")
 }

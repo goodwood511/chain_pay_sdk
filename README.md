@@ -647,107 +647,86 @@ Note: You need to run Go 1.18+ to compile;
 2. Generate your own `RSA` password pair;
 3. Prepare the platform's `RSA` public key;
 
-### 9.2. Creating a Signature Object
+### 9.2. Simplified SDK Initialization (Best Practice)
 
-1. Add a configuration file `config.yaml`.
+It is recommended to use a shared utility package to manage the SDK instance and the HTTP client. See [example/utils](example/utils/utils.go) for a full implementation.
+
+1. Create a `config.yaml`:
 
 ```yaml
-ApiKey: ""
-ApiSecret: ""
-PlatformPubKey: ""
-RsaPrivateKey: ""
+ApiKey: "your_api_key"
+ApiSecret: "your_api_secret"
+PlatformPubKey: "platform_public_key"
+PlatformRiskPubKey: "platform_risk_public_key"
+RsaPrivateKey: "your_rsa_private_key"
 ```
 
-2. Load the configuration file and create the API object.
+2. Initialize the SDK and the shared client:
 
 ```golang
+import (
+    "github.com/goodwood511/chain_pay_sdk/api"
+    "github.com/goodwood511/chain_pay_sdk/example/utils"
+)
 
-	viper.SetConfigFile("config.yaml")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Sprintf("Failed to load config: %s", err))
-	}
-	apiObj := api.NewSDK(api.SDKConfig{
-		ApiKey:             viper.GetString("ApiKey"),
-		ApiSecret:          viper.GetString("ApiSecret"),
-		PlatformPubKey:     viper.GetString("PlatformPubKey"),
-		PlatformRiskPubKey: viper.GetString("PlatformRiskPubKey"),
-		RsaPrivateKey:      viper.GetString("RsaPrivateKey"),
-	})
-
+func main() {
+    // Load config and init SDK
+    apiObj := utils.InitSDK()
+    
+    // The shared client is pre-configured with 15s timeout and 3 retries
+    // utils.Client
+}
 ```
 
-### 9.3. Create request data and sign it
+### 9.3. Call API and Verify Response
 
-Let's take creating a user as an example.
+Using the `CallAndVerify` helper significantly reduces boilerplate code.
 
 ```golang
+import (
+    "github.com/goodwood511/chain_pay_sdk/api"
+    "github.com/goodwood511/chain_pay_sdk/example/utils"
+    "github.com/goodwood511/chain_pay_sdk/response_define"
+    "github.com/sirupsen/logrus"
+)
 
-  // ....
-	openId := "PT00001"
+func main() {
+    apiObj := utils.InitSDK()
 
-	reqBody, timestamp, sign, clientSign, err := apiObj.CreateUser(openId)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
+    openId := "PT00001"
+    reqBody, timestamp, sign, clientSign, err := apiObj.CreateUser(openId)
+    if err != nil {
+        logrus.Fatalf("Failed to prepare request: %v", err)
+    }
 
+    var resp response_define.ResponseCreateUser
+    err = utils.CallAndVerify(apiObj, api.PathCreateUser, reqBody, timestamp, sign, clientSign, &resp)
+    if err != nil {
+        logrus.Fatalf("API call failed: %v", err)
+    }
+
+    logrus.Infof("Success: %+v", resp)
+}
 ```
 
-### 9.4. Fill Request Initiate Request
+### 9.4. Handle Callbacks
+
+Verify the authenticity of incoming platform notifications:
 
 ```golang
-  // ....
-	
-	finalURL, err := url.JoinPath(api.DevNetEndpoint, api.PathCreateWallet)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
+func handleCallback(c *gin.Context) {
+    body, _ := c.GetRawData()
+    var req response_define.RequestTokenCb
+    json.Unmarshal(body, &req)
 
-	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(reqBody).
-		SetHeader("key", apiObj.GetApiKey()).
-		SetHeader("timestamp", timestamp).
-		SetHeader("sign", sign).
-		SetHeader("clientSign", clientSign).
-		Post(finalURL)
-
-```
-
-### 9.5. Verify parsing return data
-
-```golang
-
-	rspCommon := response_define.ResponseCommon{}
-	err = json.Unmarshal(body, &rspCommon)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-	logrus.Infoln("Response: ", rspCommon)
-
-	if rspCommon.Code != response_define.SUCCESS {
-		logrus.Warnln("Response fail Code", rspCommon.Code, "Msg", rspCommon.Msg)
-		return
-	}
-
-	rspCreateUser := response_define.ResponseCreateUser{}
-	err = json.Unmarshal(body, &rspCreateUser)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-	logrus.Infoln("ResponseCreateUser: ", rspCreateUser)
-
-	mapObj := rsa_utils.ToStringMap(body)
-	err = apiObj.VerifyRSAsignature(mapObj, rspCreateUser.Sign)
-	if err != nil {
-		logrus.Warnln("Error: ", err)
-		return
-	}
-
+    // Verify RSA signature using platform public key
+    if err := utils.VerifyCallback(apiObj, body, req.Sign); err != nil {
+        c.JSON(403, gin.H{"message": "Invalid signature"})
+        return
+    }
+    
+    // Process business logic...
+}
 ```
 
 ## 10. Global status code
